@@ -35,6 +35,8 @@
 		.container-fluid .btn-primary{
 			margin-bottom: 20px !important;
 		}
+
+
 	</style>
 
 </head>
@@ -194,7 +196,7 @@
 		    <label for="produto-id-put">ID:</label>
 		    <input type="text" class="form-control" id="produto-id-put" placeholder="Número de identificação do produto a ser editado">
 		  </div>
-		</form>
+		</form>		
 		<button id="put-produto-pesquisa" class="btn btn-primary btn-lg">
 		  procurar produto
 		</button>	
@@ -205,6 +207,9 @@
   			  <h2>Editar este produto</h2>
 		  </div>
 		  <div class="form-group">
+		  	<label for="produto-id-hidden">Nome:</label>
+		    <input type="text" class="form-control" id="produto-id-hidden" placeholder="Nome do produto">
+		    <br>
 		    <label for="produto-nome-put">Nome:</label>
 		    <input type="text" class="form-control" id="produto-nome-put" placeholder="Nome do produto">		   
 		    <br>
@@ -216,9 +221,10 @@
 		    <label for="produto-preco-put">Preço:</label>
 		    <input type="text" class="form-control" id="produto-preco-put" placeholder="Preço do produto">		    
 		  </div>
+		  <a id="cancel-edit" href="#">CANCELAR</a>
 		  <button id="put-produto" class="btn btn-primary btn-lg">
-			editar produto
-		  </button>		  
+			salvar
+		  </button>		   
 		</form>
 		<!--  end form edit-->
 		

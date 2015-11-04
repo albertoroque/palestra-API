@@ -135,10 +135,17 @@
 	    	var msg = responseText.responseText;
 	    	var obj = JSON.parse(msg);	
 	    	$("#post-response").empty();
-	    	$("#post-response").append("<br>"+ obj.Message);						
+	    	$("#post-response").append("<br>"+ obj.Message);
+
 	    	var validation = obj.ModelState;
-	    	console.log(validation);	    		    		    	  	    	   
-	    	$("#post-response").append(validation.produto.Preco[0]);  	    
+	    	
+	    	$("#produto-nome-validation").empty();
+	    	$("#produto-categoria-validation").empty();
+	    	$("#produto-preco-validation").empty();
+
+	    	$("#produto-nome-validation").append(validation["produto.Nome"]);
+	    	$("#produto-categoria-validation").append(validation["produto.Categoria"]);
+	    	$("#produto-preco-validation").append(validation["produto.Preco"]);  	    
 	    });
  };
 
@@ -147,46 +154,57 @@
 var btnP = document.getElementById("put-produto-pesquisa"); 
 btnP.onclick = function()
 {
-	 var id = $('#produto-id').val();
- 	 console.log(id);
+	 var id = $('#produto-id-put').val(); 	
 	 $.ajax
 	 ({
 		 method: "GET",
 		 url: "http://localhost:55130/api/produtos/" + id,				
 		 dataType: "json"
 	 }) 
-	    .success(function(response) 	 	
-	 	{
-	 	  var produtos = response;	 	  
-	 	  if(produtos != null)
-	 	  {	 		 	  	    	 	  	  
-			 $("#lista-produtos-id").empty();  	
-			 $("#lista-produtos-id").append("<li> Nome:" + produtos.Nome + " | Preço:" + produtos.Preco +"</li><br>");		 	 
-	 	  }
-	 	  else
-	 	  {	 
-	 	  	//O ELSE NUNCA VAI ENTRAR AQUI, POIS O C# MANDA UM HTTP ERROR (404) CASO O OBJECT SEJA NULO.	  
-	 	  	var mensagem = "A pesquisa não obteve resultados!";
-	 	  	$("#lista-produtos-id").empty(); 
-	 	  	$("#lista-produtos-id").append("<li>"+ mensagem + "</li>");	    	
-	 	  }		  
+	    .success(function(response){
+		 	var produtos = response;	 	  	 	  
+	 	    //MOSTRA O FORMULÁRIO DE EDIÇÃO
+	 	  	$( "#form-edit" ).toggle( "slow" );		 	  	    	 	  	  
+
+	 	  	$("#produto-id-hidden").empty();  	
+			$("#produto-id-hidden").val(produtos.Id);
+			$("#produto-nome-put").empty();  	
+			$("#produto-nome-put").val(produtos.Nome);
+			$("#produto-categoria-put").empty();  	
+			$("#produto-categoria-put").val(produtos.Categoria);
+			$("#produto-preco-put").empty();  	
+			$("#produto-preco-put").val(produtos.Preco);		 	 	 	   	  
 	 	})
 
 	    .error(function(){
-	    	$("#lista-produtos-id").empty();
-	    	$("#lista-produtos-id").append("<li> Erro na requisição GET PROD BY ID </li>");	    	
+	    	$("#put-response").empty();
+	    	$("#put-response").append("O produto não existe!");
+	    	$('#produto-preco-put').focus();	    	
 	    });
 };
 
+// BOTAO PARA CANCELAMENTO DA EDIÇÃO
+var btnCancel = document.getElementById("cancel-edit"); 
+btnCancel.onclick = function(){	
+	$( "#form-edit" ).toggle( "slow" ); 
+	$('#produto-id-put').focus();
+	$("#put-response").empty();
+}
+
+
  // PUT PRODUTO   
- var btn5 = document.getElementById("post-produto"); 
+ var btn5 = document.getElementById("put-produto"); 
  btn5.onclick = function() 
- { 	  	 
+ { 	 
+ 	 var id = $('#produto-id-hidden').val();	
+ 	 var nome = $('#produto-nome-put').val(); 	 
+ 	 var categoria =  $('#produto-categoria-put').val();
+ 	 var preco =  $('#produto-preco-put').val();
+
 	 $.ajax
 	 ({
-
 		 method: "PUT",
-		 url: "http://localhost:55130/api/produtos",
+		 url: "http://localhost:55130/api/produtos/" + id,
 		 //valr do tipo no C# : calor capturado no formulário
 		 data: {Nome : nome, Categoria : categoria, Preco : preco},			
 		 dataType: "json"
@@ -195,16 +213,19 @@ btnP.onclick = function()
 	 	{	 	 	 	 
 	 	  if(response != null)
 	 	  {	 		 	  	    	 	  	  
-			 $("#post-response").empty();  				 
-			 $("#post-response").append("<p> Nome:" + response.Nome + "</p>");
-			 $("#post-response").append("<p> Categoria:" + response.Categoria + "</p>");
-			 $("#post-response").append("<p> Preço:" + response.Preco +"</p><br>");		 	 
+			 $("#put-response").empty();
+			 $("#put-response").append("<p> Dados salvos com sucesso</p>");  				 
+			 $("#put-response").append("<p> Nome:" + response.Nome + "</p>");
+			 $("#put-response").append("<p> Categoria:" + response.Categoria + "</p>");
+			 $("#put-response").append("<p> Preço:" + response.Preco +"</p><br>");
+			 $('#produto-preco-put').focus();	    			 	 
 	 	  }
 	 	  else
 	 	  {	 	 	  		 
 	 	  	var mensagem = "Erro ao enviar dados!";
-	 	  	$("#post-response").empty(); 
-	 	  	$("#post-response").append("<li>"+ mensagem + "</li>");	    	
+	 	  	$("#put-response").empty(); 
+	 	  	$("#put-response").append("<li>"+ mensagem + "</li>");
+	 	  	$('#produto-preco-put').focus();	    	
 	 	  }		  
 	 	})
 
@@ -212,11 +233,11 @@ btnP.onclick = function()
 	    {	    		    	    
 	    	var msg = responseText.responseText;
 	    	var obj = JSON.parse(msg);	
-	    	$("#post-response").empty();
-	    	$("#post-response").append("<br>"+ obj.Message);						
+	    	$("#put-response").empty();
+	    	$("#put-response").append("<br>"+ obj.Message);
+
 	    	var validation = obj.ModelState;
-	    	console.log(validation);	    		    		    	  	    	   
-	    	$("#post-response").append(validation.produto.Preco[0]);  	    
+	    	$('#produto-preco-put').focus();	    		    	 	  
 	    });
  };
 
